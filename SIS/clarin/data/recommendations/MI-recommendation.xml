@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?> 
 <recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
    <header>
       <lastUpdateCommitID>147cb5ea659a5752efd819898b43da23e00c6a77</lastUpdateCommitID>
       <filter>
          <centreID>MI</centreID>
       </filter>
-   <centre id="MI" deposition="1">
-        <name>Meertens Instituut/HuC</name>
-        <a href="https://centres.clarin.eu/centre/23"/>
-        <nodeInfo>
-          <ri status="C-centre">CLARIN</ri>
-        </nodeInfo>
+      <respStmt>
+         <name><!--for multiple curators, use multiple respStmt elements, each with a resp--></name>
+         <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+         <link><!--URI; GitHub page or any other way to id/contact the curator--></link>
+         <reviewDate>0001-01-01</reviewDate>
+      </respStmt>
+      <centre id="MI" deposition="1">
+         <centreName>Meertens Instituut/HuC</centreName>
+         <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/23"/>
+         <nodeInfo>
+            <ri status="C-centre">CLARIN</ri>
+         </nodeInfo>
       </centre>
     </header>
+   <info><!--use p, ul, ol elements here--></info>
    <formats>
       <format id="fAVI">
          <domain>Audiovisual Source Language Data</domain>

@@ -5,23 +5,22 @@
       <filter>
          <centreID>IDS</centreID>
       </filter>
-      
       <respStmt>
-         <name>Piotr Banski</name>
-         <resp>text formats</resp>
-         <link>https://github.com/bansp</link>
+         <name>Harald Lüngen</name>
+         <resp>Text formats</resp>
+         <link>https://www.ids-mannheim.de/digspra/personal/luengen/</link>
          <reviewDate>2023-07-24</reviewDate>
       </respStmt>
       <respStmt>
-         <name>Eliza Margaretha Illig</name>
-         <resp>audio visual formats</resp>
-         <link>https://github.com/margaretha</link>
-         <reviewDate>2023-12-19</reviewDate>
+         <name>Siegwalt Lindenfelser</name>
+         <resp>Audio visual formats</resp>
+         <link>https://www.ids-mannheim.de/prag/personal/lindenfelser/</link>
+         <reviewDate>2024-05-08</reviewDate>
       </respStmt>
-      
-        <centre id="IDS" deposition="1">
-         <name>Leibniz-Institut für Deutsche Sprache</name>
-         <a href="https://centres.clarin.eu/centre/11"/>
+      <centre id="IDS" deposition="1">
+         <centreName>Leibniz-Institut für Deutsche Sprache</centreName>
+         <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/11"/>
+         <registryLink registry="Text+" uri="https://registry.text-plus.org/entity/fbb09340-0dd4-473d-bd54-13a0518d1e47/"/>
          <nodeInfo>
             <ri status="C-centre">CLARIN</ri>
             <ri status="Collections, Lexical Resources, Operations">Text+</ri>
@@ -99,7 +98,7 @@
          <domain>Audiovisual Annotation</domain>
          <level>discouraged</level>
       </format>
-      <format id="fELAN">
+      <format id="fEAF">
          <domain>Audiovisual Annotation</domain>
          <level>acceptable</level>
       </format>
@@ -165,6 +164,11 @@
          <domain>Audiovisual Source Language Data</domain>
          <level>recommended</level>
          <comment>25 fps, 1920×1080, constant bit rate </comment>
+      </format>
+      <format id="fMPEG-4-AVC">
+         <domain>Audiovisual Source Language Data</domain>
+         <level>acceptable</level>
+         <comment>50 fps, 4096x2160, constant bit rate</comment>
       </format>
       <format id="fMPEG1">
          <domain>Audiovisual Source Language Data</domain>

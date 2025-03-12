@@ -1,27 +1,34 @@
-xquery version "3.0";
-
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare option exist:serialize "method=xhtml media-type=text/html indent=yes doctype-system=about:legacy-compat";
+xquery version "3.1";
 
 import module namespace menu = "http://clarin.ids-mannheim.de/standards/menu" at "../modules/menu.xql";
 import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "../modules/app.xql";
 import module namespace cm = "http://clarin.ids-mannheim.de/standards/centre-module" at "../modules/centre.xql";
+
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare option output:method "html";
+declare option output:media-type "text/html";
+declare option output:indent "yes";
+declare option output:html-version "5";
 
 (: 
     @author margaretha, banski
 :)
 
 let $depositioncentres := cm:get-deposition-centres("CLARIN")
-let $numOfBCentres := fn:count($depositioncentres) 
-let $numOfBCentresWithRecommendations := cm:count-number-of-centres-with-recommendations($depositioncentres)
-let $percentage := format-number($numOfBCentresWithRecommendations div $numOfBCentres,'0%')
+let $numOfDepositionCentres := fn:count($depositioncentres) 
+let $numOfDepositionCentresWithRecommendations := cm:count-number-of-centres-with-recommendations($depositioncentres)
+let $percentage := format-number($numOfDepositionCentresWithRecommendations div $numOfDepositionCentres,'0%')
+
+let $date := fn:current-dateTime()
+let $timestamp :=  format-dateTime($date, "[MNn] [D1o], [Y]", "en", (), ())
 
 return
     
     
-    <html>
+    <html lang="en">
         <head>
             <title>Relevant CLARIN KPIs</title>
+            <link rel="icon" type="image/x-icon" href="{app:favicon()}"/>
             <link rel="stylesheet" type="text/css" href="{app:resource("style.css", "css")}"/>
             <script type="text/javascript" src="{app:resource("session.js", "js")}"/>
         </head>
@@ -49,8 +56,8 @@ return
                             </tr>
                             <tr>
                                 <td class="column">1.</td>
-                                <td class="column">Number of certified deposition centres</td>
-                                <td class="column">Number of certified deposition centres</td>
+                                <td class="column">Number of certified <a href="{app:link("views/list-statistics-centre.xq")}">deposition centres</a></td>
+                                <td class="column">Number of certified <a href="{app:link("views/list-statistics-centre.xq")}">deposition centres</a></td>
                             </tr>
                             <tr>
                                 <td class="column">2.</td>
@@ -65,18 +72,23 @@ return
                     
                         <table style="width:600px; border-collapse:collapse;">
                             <tr>
-                                <td class="column">CLARIN deposition centres recorded in the SIS</td>
-                                <td class="column">{$numOfBCentres}</td>
+                                <td class="column">CLARIN <a href="{app:link("views/list-statistics-centre.xq")}">deposition centres</a> recorded in the SIS</td>
+                                <td class="column">{$numOfDepositionCentres}</td>
                             </tr>
                             <tr>
-                                <td class="column">Number of deposition centres that have provided information (and recorded that in the SIS)</td>
-                                <td class="column">{$numOfBCentresWithRecommendations}</td>
+                                <td class="column">Number of <a href="{app:link("views/list-statistics-centre.xq")}">deposition centres</a> 
+                                    that have provided information (and recorded that in the SIS)</td>
+                                <td class="column">{$numOfDepositionCentresWithRecommendations}</td>
                             </tr>
                             <tr>
                                 <td class="column">KPI "Collections of standards and mappings" as represented in the SIS </td>
                                 <td class="column">{$percentage}</td>
                             </tr>
+                            <tr>
+                                <td colspan="2" style="padding-top: 10px; text-align:right">Timestamp: {$timestamp}</td>
+                            </tr>
                         </table>
+                        
                         <!--
                         <ul>
                             <li>CLARIN deposition centres recorded in the SIS: <b>count(cm:get_centres(RI=CLARIN, status=deposition centre))</b>
@@ -86,6 +98,8 @@ return
                                     count(rf:get_centres_where count(/recommendation/formats/* gt 0)) /
                                     count(get_centres(RI=CLARIN, status=deposition centre)) %</b></li>
                         </ul>
+                        
+                        <a href="{app:link("views/list-centres.xq?status=B-centre&amp;submit=Filter")}">CLARIN B-centres</a>
                         -->
                     </div>
                     <div>
@@ -98,15 +112,11 @@ return
                                 or keeping them current for each centre – that is <a href="https://github.com/clarin-eric/standards/wiki/Updating-format-recommendations">the
                                     role of the centres themselves</a>. If you notice that recommendations from some data-depositing centre are missing, please kindly consider inviting that
                                 centre to provide their information to the SIS.</li>
-                            <li>The SIS provides information on all <a href="{app:link("views/list-centres.xq")}">centres that allow
-                                    for data depositions</a> (some of them are not B-centres, and some of them may not be CLARIN centres either). That set is wider than the set of
-                                <a href="{app:link("views/list-centres.xq?status=B-centre&amp;submit=Filter")}">CLARIN B-centres</a>,
-                                which is the basis for the calculation of the CLARIN KPI listed as #2 above.</li>
+                            <li>The SIS provides information on (among others) all the <a href="{app:link("views/list-centres.xq")}">CLARIN centres that allow
+                                    for data depositions</a>. That set is wider than the set of 
+                                    <a href="{app:link("views/list-centres.xq?status=B-centre&amp;submit=Filter")}">CLARIN B-centres</a>, and it is the former set 
+                                    that constitutes the basis for the calculation of the CLARIN KPI listed as #2 above.</li>
                         </ul>
-                        <p>The third potentially relevant KPI is "Collaboration with RIs", and its measure is "Number of official collaborations with RIs as
-                            confirmed in formal agreements". Regarding this KPI, the SIS can provide only indirect and rather imprecise information: it can be gleaned from the number of
-                            Research Infrastructures other than CLARIN that the SIS lists information on. More details in this area can be found in
-                            <a href="https://www.clarin.eu/content/clarin-and">the relevant section(s) of clarin.eu</a>.</p>
                     </div>
                 </div>
                 <div class="footer">{app:footer()}</div>

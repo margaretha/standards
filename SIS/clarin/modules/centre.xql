@@ -1,4 +1,4 @@
-xquery version "3.0";
+xquery version "3.1";
 
 module namespace cm = "http://clarin.ids-mannheim.de/standards/centre-module";
 import module namespace centre = "http://clarin.ids-mannheim.de/standards/centre" at "../model/centre.xqm";
@@ -17,12 +17,20 @@ declare function cm:get-centre($id) {
     centre:get-centre($id)
 };
 
+declare function cm:isDepositing($centre){
+    if(xs:boolean($centre/@deposition)) then true() else false()
+};
+
 declare function cm:get-centre-by-research-infrastructure($ri as xs:string, $status as xs:string) {
     centre:get-centre-by-research-infrastructure($ri, $status)
 };
 
 declare function cm:get-deposition-centres($ri as xs:string){
     centre:get-deposition-centres($ri)
+};
+
+declare function cm:get-curated-centres($ri as xs:string){
+    $recommendation:centres/header[centre/nodeInfo/ri=$ri and respStmt/name[normalize-space() != '']]
 };
 
 declare function cm:count-number-of-centres-with-recommendations($centres) {
@@ -85,69 +93,108 @@ declare function cm:print-ri($centre-ri) {
         <li>{$ri/text(), $status}</li>
 };
 
-declare function cm:list-centre($sortBy, $statusFilter, $riFilter) {
-    for $c in $centre:centres
-    let $name := $c/name/text()
-    let $id := data($c/@id)
-    
-    let $ris :=
+declare function cm:get-ris($c){
     for $ri in $c/nodeInfo/ri
-    let $status := data($ri/@status)
-    return
-        if ($status ne "") then
-            ($ri, concat(" (", $status, ")"), <br/>)
-        else
-            ($ri, <br/>)
-    
+            let $status := data($ri/@status)
+            return
+                if ($status ne "") then
+                    ($ri, concat(" (", $status, ")"), <br/>)
+                else
+                    ($ri, <br/>)
+};
+
+declare function cm:get-statuses($c){
     let $combinedStatuses := fn:string-join($c/nodeInfo/ri/@status, ",")
     let $statuses := fn:tokenize($combinedStatuses, ",")
-        order by
-        
-        if ($sortBy eq 'name')
-        then
-            fn:lower-case($name)
-        else
-            if ($sortBy eq 'ri')
-            then
-                fn:lower-case($ris)
-            else
-                if ($sortBy eq 'id')
-                then
-                    (fn:lower-case($id))
-                else
-                    (fn:lower-case($id))
+    return $statuses
+};
+
+declare function cm:list-centre-descending($sortBy, $statusFilter, $riFilter) {
+    for $c in $centre:centres
+    let $id := data($c/@id)
+    let $ris :=cm:get-ris($c)
+    order by 
+        if ($sortBy eq 'curated')
+            then rf:isCurated(cm:get-recommendations($id))
+       else if ($sortBy eq 'depositing')     
+            then cm:isDepositing($c)
+            else ()
+    descending
+    return 
+        cm:filter-by-status($c, $ris, $statusFilter, $riFilter)
+};
+
+declare function cm:list-centre($sortBy, $statusFilter, $riFilter) {
+    if ($sortBy eq 'curated' or $sortBy eq 'depositing')
+    then cm:list-centre-descending($sortBy, $statusFilter, $riFilter)
+    else
+        for $c in $centre:centres
+            let $name := $c/centreName/text()
+            let $id := data($c/@id)
+            let $ris :=cm:get-ris($c)
     
-    return
-        
-        if ($statusFilter)
-        then
-            if (fn:contains($statuses, $statusFilter))
-            then
-                cm:filter-by-ri($id, $name, $ris, $riFilter)
+            order by 
+            if ($sortBy eq 'curated')
+            then rf:isCurated(cm:get-recommendations($id))
             else
-                ()
-        else
-            (cm:filter-by-ri($id, $name, $ris, $riFilter))
+            if ($sortBy eq 'name')
+            then
+                fn:lower-case($name)
+            else
+                if ($sortBy eq 'ri')
+                then
+                    fn:lower-case($ris)
+                else
+                    if ($sortBy eq 'id')
+                    then
+                        (fn:lower-case($id))
+                    else 
+                        if ($sortBy eq 'depositing')     
+                        then cm:isDepositing($c)    
+                        else (fn:lower-case($id))
+                    
+    return cm:filter-by-status($c, $ris, $statusFilter, $riFilter)
 };
 
 
-declare function cm:filter-by-ri($id, $name, $ris, $riFilter) {
+declare function cm:filter-by-status($c, $ris, $statusFilter, $riFilter){
+    if ($statusFilter)
+        then
+            if (fn:contains(cm:get-statuses($c), $statusFilter))
+            then
+                cm:filter-by-ri($c, $ris, $riFilter)
+            else
+                ()
+        else
+            (cm:filter-by-ri($c, $ris, $riFilter))
+};
+
+declare function cm:filter-by-ri($c, $ris, $riFilter) {
     if ($riFilter and not($riFilter eq 'all'))
     then
         if (fn:contains($ris, $riFilter))
         then
-            cm:print-centre-row($id, $name, $ris)
+            cm:print-centre-row($c, $ris)
         else
             ()
     else
-        (cm:print-centre-row($id, $name, $ris))
+        (cm:print-centre-row($c, $ris))
 };
 
-declare function cm:print-centre-row($id, $name, $ri) {
+declare function cm:print-centre-row($c, $ri) {
+    let $name := $c/centreName/text()
+    let $id := data($c/@id)
+    let $isDepositing := 
+        if (cm:isDepositing($c)) then "✓" else ""
+    let $recommendation := cm:get-recommendations($id)
+    let $isCurated := if (rf:isCurated($recommendation)) then "✓" else "" 
+    return
     <tr>
         <td class="recommendation-row"><a href="{app:link(concat("views/view-centre.xq?id=", $id))}">{$id}</a></td>
         <td class="recommendation-row">{$name}</td>
         <td class="recommendation-row">{$ri}</td>
+        <td class="recommendation-row" style="text-align:center">{$isDepositing}</td>
+        <td class="recommendation-row" style="text-align:center">{$isCurated}</td>
     </tr>
 };
 
@@ -163,23 +210,22 @@ declare function cm:get-centre-info($id, $lang) {
     else
         ()
     
-    let $info :=
-    if ($centre-info)
-    then
-        $centre-info
-    else
-        cm:get-default-info($id)
-    
     return
-        cm:parseFormatRef($info)
+        if ($centre-info)
+        then
+            $centre-info
+        else
+            cm:get-default-info($id)
 };
 
-declare function cm:parseFormatRef($info) {
+declare function cm:parseFormatRef($info,$id) {
     if ($info)
     then
         (
-        element info {
+        element span {
             $info/@*,
+            attribute {"id"} {concat("desctext",$id)},
+            attribute {"class"} {"desctext"},
             for $node in $info/node()
             return
                 if ($node/self::p)
@@ -212,47 +258,6 @@ declare function cm:get-default-info($id) {
         else
             cm:get-recommendations($id)/info[not(@xml:lang)]
 };
-
-declare function cm:print-curation($respStmt, $language) {
-    if ($respStmt)
-    then
-        (
-        <div>
-            <span class="heading">Curation: </span>
-            {
-                for $rs in $respStmt
-                let $resp := functx:capitalize-first($rs/resp/text())
-                return
-                    (
-                    <ul>
-                        <li>{if ($resp) then concat($resp,": ") else (),
-                            
-                                if (empty($rs/link/text()))
-                                then
-                                    (<span>{$rs/name/text()}</span>)
-                                else
-                                    (
-                                    <a href="{$rs/link/text()}">{$rs/name/text()}</a>)
-                            }
-                            <span> ({
-                                    format-date($rs/reviewDate/text(),
-                                    "[MNn] [D], [Y]", $language, (), ())
-                                })</span>
-                        </li>
-                    </ul>
-                    )
-            }
-        </div>
-        )
-    else
-        (
-        <div>
-            <span class="heading" style="color:darkred">Warning: </span>
-            <span style="color:darkred">The recommendations have not been curated yet.</span>
-        </div>
-        )
-};
-
 
 declare function cm:print-recommendation-rows($recommendation, $centre-id, $sortBy,
 $language) {

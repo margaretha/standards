@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?> 
 <recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
     <header>
         <lastUpdateCommitID>bec52cd36a2996677ce07153a19ce774097f9130</lastUpdateCommitID>
         <filter>
             <centreID>LINDAT</centreID>
         </filter>
+        <respStmt>
+            <name><!--for multiple curators, use multiple respStmt elements, each with a resp--></name>
+            <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+            <link><!--URI; GitHub page or any other way to id/contact the curator--></link>
+            <reviewDate>0001-01-01</reviewDate>
+        </respStmt>
         <centre id="LINDAT" deposition="1">
-        <name>LINDAT/CLARIN</name>
-        <a href="https://centres.clarin.eu/centre/3"/>
-        <nodeInfo>
-          <ri status="B-centre">CLARIN</ri>
-        </nodeInfo>
-      </centre>
+            <centreName>LINDAT/CLARIN</centreName>
+            <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/3"/>
+            <nodeInfo>
+                <ri status="B-centre">CLARIN</ri>
+            </nodeInfo>
+        </centre>
     </header>
+    <info><!--use p, ul, ol elements here--></info>
     <formats><!--
             This template will assist in adjusting/creating a recommendations document if you don't
             have access to a schema-aware XML editor. Copy the XML fragment, 

@@ -1,12 +1,16 @@
-xquery version "3.0";
-
-declare option exist:serialize "method=xhtml media-type=text/html indent=yes doctype-system=about:legacy-compat";
+xquery version "3.1";
 
 import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "../modules/app.xql";
 import module namespace menu = "http://clarin.ids-mannheim.de/standards/menu" at "../modules/menu.xql";
 import module namespace vsm ="http://clarin.ids-mannheim.de/standards/view-spec" at "../modules/view-spec.xql";
 import module namespace asm ="http://clarin.ids-mannheim.de/standards/add-spec-module" at "../modules/add-spec.xql";
 import module namespace rsm ="http://clarin.ids-mannheim.de/standards/register-spec-module" at "../modules/register-spec.xql";
+
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare option output:method "html";
+declare option output:media-type "text/html";
+declare option output:indent "yes";
+declare option output:html-version "5";
 
 (: Define the adding standard part page
    @author margaretha
@@ -30,9 +34,10 @@ let $validation := asm:validate-part($submitted,$spec,$validate-id,$part-id,
 
 return
 
-<html>
+<html lang="en">
     <head>
        <title>Adding a Part of {$spec-name}</title>       
+        <link rel="icon" type="image/x-icon" href="{app:favicon()}"/>
         <link rel="stylesheet" type="text/css" href="{app:resource("style.css","css")}"/>
         <script type="text/javascript" src="{app:resource("edit.js","js")}"/>
         <script type="text/javascript" src="{app:resource("tinymce/tinymce.min.js","js")}"/>
@@ -72,7 +77,7 @@ return
                      </tr>
                     <tr><td style="width:100px">Title:*</td>
                          <td><input name="pname" value="{$part-name}" type="text" 
-                            class="{app:get-input-class($submitted,$part-name)}" style="width:450px;"/></td>
+                            class="{rsm:get-input-class($submitted,$part-name)}" style="width:450px;"/></td>
                     </tr>                    
                     <tr><td>Abbreviation:</td>
                         <td><input name="pabbr" value="{$part-abbr}" type="text" class="inputText" style="width:450px;"/></td>

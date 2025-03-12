@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?> 
 <recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
    <header>
       <lastUpdateCommitID>147cb5ea659a5752efd819898b43da23e00c6a77</lastUpdateCommitID>
       <filter>
          <centreID>CLST</centreID>
       </filter>
-   <centre id="CLST" deposition="1">
-        <name>Centre for Language and Speech Technology</name>
-        <a href="https://centres.clarin.eu/centre/40"/>
-        <nodeInfo>
-          <ri status="C-centre">CLARIN</ri>
-        </nodeInfo>
+      <respStmt>
+         <name><!--for multiple curators, use multiple respStmt elements, each with a resp--></name>
+         <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+         <link><!--URI; GitHub page or any other way to id/contact the curator--></link>
+         <reviewDate>0001-01-01</reviewDate>
+      </respStmt>
+      <centre id="CLST" deposition="1">
+         <centreName>Centre for Language and Speech Technology</centreName>
+         <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/40"/>
+         <nodeInfo>
+            <ri status="C-centre">CLARIN</ri>
+         </nodeInfo>
       </centre>
     </header>
+   <info><p>See the <a href="https://www.ru.nl/en/cls/clst/about-clst">CLST home page</a> for some info.</p></info>
    <formats>
       <format id="fWave">
          <domain>Audiovisual Source Language Data</domain>

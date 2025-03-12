@@ -1,15 +1,19 @@
-xquery version "3.0";
-
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare option exist:serialize "method=xhtml media-type=text/html indent=yes doctype-system=about:legacy-compat";
+xquery version "3.1";
 
 import module namespace menu = "http://clarin.ids-mannheim.de/standards/menu" at "../modules/menu.xql";
 import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "../modules/app.xql";
 
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare option output:method "html";
+declare option output:media-type "text/html";
+declare option output:indent "yes";
+declare option output:html-version "5";
 
-<html>
+
+<html lang="en">
     <head>
         <title>API</title>
+        <link rel="icon" type="image/x-icon" href="{app:favicon()}"/>
         <link rel="stylesheet" type="text/css" href="{app:resource("style.css", "css")}"/>
         <script type="text/javascript" src="{app:resource("session.js", "js")}"/>
     </head>
@@ -133,6 +137,7 @@ import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "
                     </p>
                 </div>
                 
+                <!--
                 <div id="retrieving-centres" style="margin-top:30px;"><span class="subtitle">Retrieving centres</span>
                     <hr/>
                     <p><span class="heading">Method: </span> GET</p>
@@ -147,6 +152,7 @@ import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "
                         </code>
                     </p>
                 </div>
+                -->
             </div>
             <div class="footer">{app:footer()}</div>
         </div>

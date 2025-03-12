@@ -6,6 +6,8 @@
   </titleStmt>
   <keyword>document format</keyword>
   <keyword>binarized TextualData</keyword>
+  <extId type="LOC">fdd000030</extId>
+  <extId type="Wikidata">Q42332</extId>
   <info type="description">
     <p>For the purpose of CLARIN format recommendations, we treat PDF as a format collection that is
       divided along two lines: the development line from 1.0 through 1.7 and 2.0 (the latter two
@@ -15,7 +17,7 @@
       <a href="https://en.wikipedia.org/w/index.php?title=History_of_PDF&amp;oldid=1008410576">Wikipedia</a>)</p>
     <ul>
       <li>PDF/X ("PDF for Exchange"</li>
-      <li>PDF/A ("PDF for Archive")</li>
+      <li><a href="../views/view-format.xq?id=fPDFA">PDF/A ("PDF for Archive")</a></li>
       <li>PDF/E ("PDF for Engineering")</li>
       <li>PDF/VT ("PDF for exchange of variable data and transactional (VT) printing")</li>
       <li>PDF/UA ("PDF for Universal Accessibility")</li>
@@ -30,5 +32,6 @@
   <relation target="SpecPDF" type="isRelatedTo"/> 
   <mimeType>application/pdf</mimeType>
   <fileExt>.pdf</fileExt>
-  <formatFamily>Binary</formatFamily>
+  <formatFamily>PS</formatFamily>
+  <formatFamily>Container</formatFamily>
 </format>

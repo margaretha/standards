@@ -18,6 +18,53 @@ import module namespace functx = "http://www.functx.com" at "../resources/lib/fu
 declare variable $rf:pageSize := 50;
 declare variable $rf:searchMap := rf:getSearchMap();
 
+declare function rf:isCurated($recommendation){
+    let $respStmt := $recommendation/header/respStmt
+    let $respName := string($respStmt[1]/name)
+    return 
+        if ($respName) then true() else false()
+};
+
+declare function rf:print-curation($recommendation, $language) {
+   if (rf:isCurated($recommendation))
+   then
+        (
+        <div>
+            <span class="heading">Curation: </span>
+            {
+                for $rs in $recommendation/header/respStmt
+                let $resp := functx:capitalize-first($rs/resp/text())
+                return
+                    (
+                    <ul>
+                        <li>{if ($resp) then concat($resp,": ") else (),
+                            
+                                if (empty($rs/link/text()))
+                                then
+                                    (<span>{$rs/name/text()}</span>)
+                                else
+                                    (
+                                    <a href="{$rs/link/text()}">{$rs/name/text()}</a>)
+                            }
+                            <span> ({
+                                    format-date($rs/reviewDate/text(),
+                                    "[MNn] [D], [Y]", $language, (), ())
+                                })</span>
+                        </li>
+                    </ul>
+                    )
+            }
+        </div>
+        )
+    else
+        (
+        <div>
+            <span class="heading" style="color:darkred">Warning: </span>
+            <span style="color:darkred">The recommendations have not been curated yet.</span>
+        </div>
+        )
+};
+
 declare function rf:getSearchMap() {
     let $fids := distinct-values(($recommendation:format-ids, $format:ids))
     let $fabbrs := distinct-values(($recommendation:format-abbrs, $format:abbrs))
@@ -138,32 +185,57 @@ declare function rf:print-page-links($numOfRows, $sortBy, $domainId, $recommenda
 
 };
 
+declare function rf:print-page-navigation($numberOfPages, $sortBy, $domainId, 
+    $recommendationLevel, $centre, $currentPage as xs:int){
+    
+    let $nextLink :=
+        if ($currentPage = $numberOfPages) then ()
+        else ( 
+            rf:create-page-link($sortBy, $domainId, $recommendationLevel, $centre, 
+            $currentPage +1, " >>")
+        )
+    let $prevLink := 
+        if ($currentPage = 1) then () 
+        else ( 
+                rf:create-page-link($sortBy, $domainId, $recommendationLevel, $centre,
+               $currentPage -1, "<< ")
+       )
+    return ($prevLink, concat($currentPage ,"/",$numberOfPages), $nextLink)
+};
+
+declare function rf:create-page-link($sortBy, $domainId, $recommendationLevel, $centre, 
+$page as xs:int, $label) {
+    <a href="{
+                app:link(concat("views/recommended-formats-with-search.xq?sortBy=",
+                $sortBy,
+                (:"&amp;domain=",:)
+                $domainId, "&amp;level=", $recommendationLevel,
+                "&amp;centre=", $centre, "&amp;page=", $page, "#searchRecommendation"))
+            }">{$label}</a>
+};
+
 declare function rf:paging($rows, $page as xs:int) {
     let $numOfRows := count($rows)
     
     let $max := fn:min(($numOfRows, $page * $rf:pageSize)) + 1
     let $min := if ($page > 1) then
         (($page - 1) * $rf:pageSize)
-    else
-        1
+    else 1
     
     return
         $rows[position() >= $min and position() < $max]
 };
 
-declare function rf:print-centres($centre) {
-    let $depositing-centres := $centre:centres[@deposition = "1" or @deposition = "true"]
+declare function rf:print-centres($centre,$ri) {
+    let $depositing-centres := 
+        if ($ri eq "all") 
+        then $centre:centres 
+        else centre:get-deposition-centres($ri)
+        
     for $c in data($depositing-centres/@id)
         order by fn:lower-case($c)
     return
-        if ($c eq $centre)
-        then
-            (<option
-                value="{$c}"
-                selected="selected">{$c}</option>)
-        else
-            (<option
-                value="{$c}">{$c}</option>)
+        rf:print-option($centre,$c,$c)
 };
 
 declare function rf:print-domains($domains) {
@@ -175,27 +247,17 @@ declare function rf:print-domains($domains) {
         then
             <option
                 value="{$id}"
-                selected="selected"
-                title="{$d/desc/text()}">{$d/name/text()}</option>
+                selected="selected">{$d/name/text()}</option>
         else
             <option
-                value="{$id}"
-                title="{$d/desc/text()}">{$d/name/text()}</option>
+                value="{$id}">{$d/name/text()}</option>
 };
 
 declare function rf:print-keywords($keyword) {
-    let $keywords := $format:formats/keyword
-    for $k in fn:distinct-values($keywords)
+    for $k in $format:keywords
         order by fn:lower-case($k)
     return
-        if ($k eq $keyword)
-        then
-            (<option
-                value="{$k}"
-                selected="selected">{$k}</option>)
-        else
-            (<option
-                value="{$k}">{$k}</option>)
+        rf:print-option($keyword,$k,$k)
 };
 
 declare function rf:print-option($selected, $value, $label) {
@@ -203,16 +265,14 @@ declare function rf:print-option($selected, $value, $label) {
     then
         <option value="{$value}">{$label}</option>
     else
-        for $s in $selected
-        return
-            if ($s eq $value)
-            then
-                <option
-                    value="{$value}"
-                    selected="selected">{$label}</option>
-            else
-                <option
-                    value="{$value}">{$label}</option>
+        if ($selected eq $value)
+        then
+            <option
+                value="{$value}"
+                selected="selected">{$label}</option>
+        else
+            <option
+                value="{$value}">{$label}</option>
 };
 
 declare function rf:print-centre-recommendation($requestedCentre, 
@@ -368,8 +428,10 @@ $includeFormat, $includeCentre) {
             }
         </a>
         )
-    else
+    else(
+        fn:substring($format-id, 2),
         rf:print-missing-format-link($format-id)
+        )
     
     let $level := $format/level/text()
     let $format-comment := rf:print-format-comments($format, $language)
@@ -378,7 +440,7 @@ $includeFormat, $includeCentre) {
     
     let $domainId := data($domain/@id)
     let $domainName := $domain/name/text()
-    let $domainDesc := $domain/desc/text()
+    let $domainDesc := $domain/desc
     
     return
         <tr>
@@ -471,7 +533,6 @@ declare function rf:print-format-comments($format, $language) {
 };
 
 declare function rf:print-missing-format-link($format-id) {
-    (fn:substring($format-id, 2),
     <span class="tooltip">
         <a style="margin-left:5px;" href="{app:getGithubIssueLink($format-id)}">
             <img src="{app:resource("plus.png", "img")}" height="15"/>
@@ -480,5 +541,5 @@ declare function rf:print-missing-format-link($format-id) {
             class="tooltiptext"
             style="width:300px;">Click to add or suggest missing format information
         </span>
-    </span>)
+    </span>
 };

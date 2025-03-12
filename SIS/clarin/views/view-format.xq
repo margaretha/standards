@@ -1,7 +1,4 @@
-xquery version "3.0";
-
-declare namespace exist = "http://exist.sourceforge.net/NS/exist";
-declare option exist:serialize "method=xhtml media-type=text/html indent=yes doctype-system=about:legacy-compat";
+xquery version "3.1";
 
 import module namespace menu = "http://clarin.ids-mannheim.de/standards/menu" at "../modules/menu.xql";
 import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "../modules/app.xql";
@@ -9,11 +6,19 @@ import module namespace app = "http://clarin.ids-mannheim.de/standards/app" at "
 import module namespace vfm = "http://clarin.ids-mannheim.de/standards/view-format" at "../modules/view-format.xql";
 import module namespace vsm = "http://clarin.ids-mannheim.de/standards/view-spec" at "../modules/view-spec.xql";
 
+import module namespace domain = "http://clarin.ids-mannheim.de/standards/domain" at "../model/domain.xqm";
+
+declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
+declare option output:method "html";
+declare option output:media-type "text/html";
+declare option output:indent "yes";
+declare option output:html-version "5";
+
 let $id := request:get-parameter('id', '')
 let $centre := request:get-parameter('centre', '')
 let $domain := request:get-parameter('domain', '')
 let $recommendationType := request:get-parameter('type', '')
-let $sortBy := request:get-parameter('sortBy', '')
+let $sortBy := request:get-parameter('sortBy', 'centre')
 
 let $language := fn:substring(request:get-header("Accept-Language"),0,3)
 let $riCookie :=  request:get-cookie-value("ri")
@@ -28,9 +33,10 @@ let $format-domains := vfm:get-recommended-domains-by-format($id)
 return
     
     if (not($id) or not($format)) then
-        <html>
+        <html lang="en">
             <head>
                 <title>Not Found</title>
+                <link rel="icon" type="image/x-icon" href="{app:favicon()}"/>
                 <link rel="stylesheet" type="text/css" href="{app:resource("style.css", "css")}"/>
                 <script type="text/javascript" src="{app:resource("session.js", "js")}"/>
             </head>
@@ -49,9 +55,10 @@ return
             </body>
         </html>
     else
-        <html>
+        <html lang="en">
             <head>
                 <title>{$format-name}</title>
+                <link rel="icon" type="image/x-icon" href="{app:favicon()}"/>
                 <link rel="stylesheet" type="text/css" href="{app:resource("style.css", "css")}"/>
                 <link rel="stylesheet" type="text/css" href="{app:resource("tagclouds.css", "css")}"/>
                 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.9.1/dijit/themes/claro/claro.css" media="screen"/>
@@ -136,17 +143,20 @@ return
                         {vfm:print-multiple-values($format/formatFamily, $id, "Format family:")}
                         {vfm:print-multiple-values($format/schemaLoc, $id, "Schema location:", fn:true())}
                         
-                        
                         {if (count($format-domains)>0)
                                 then(
                                     <div>
-                                        <span class="heading">Functional domains: </span>
+                                        <span class="heading">Functional domains extracted from the recommendations: </span>
                                         <div style="column-count:1">
                                             <ul style="margin: 0; padding-left:15px;">
                                                 {
                                                     for $d in $format-domains
                                                     order by $d
-                                                    return <li>{$d}</li>
+                                                    return <li><a href="{app:link(concat("views/recommended-formats-with-search.xq?searchFormat=",$id,
+                                                    "&amp;searchButton=Search&amp;centre=&amp;domain=",domain:get-id-by-name($d),"&amp;level=&amp;sortBy=#filterRecommendation"))}">{$d}</a></li>
+                                                    
+                                                    (:return <li><a href="{app:link(concat("views/recommended-formats-with-search.xq?searchFormat=",fPDF,"&amp;searchButton=Search&amp;centre=&amp;domain=",21,"&amp;level=&amp;sortBy=#filterRecommendation))}">{$d}</a></li>:)
+                                                    (:return <li>{$d}</li>:)
                                                 }
                                                 </ul>
                                         </div>

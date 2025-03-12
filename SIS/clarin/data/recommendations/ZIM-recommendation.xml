@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?> 
 <recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
    <header>
       <lastUpdateCommitID>769a30e1aa1d88ca6ff632af0047b829055fbe76</lastUpdateCommitID>
       <filter>
          <centreID>ZIM</centreID>
       </filter>
-   <centre id="ZIM" deposition="1">
-        <name>ZIM Centre for Information Modelling</name>
-        <a href="https://centres.clarin.eu/centre/65"/>
-        <nodeInfo>
-          <ri status="B-centre">CLARIN</ri>
-        </nodeInfo>
+      <respStmt>
+         <name><!--for multiple curators, use multiple respStmt elements, each with a resp--></name>
+         <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+         <link><!--URI; GitHub page or any other way to id/contact the curator--></link>
+         <reviewDate>0001-01-01</reviewDate>
+      </respStmt>
+      <centre id="ZIM" deposition="1">
+         <centreName>ZIM Centre for Information Modelling</centreName>
+         <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/65"/>
+         <nodeInfo>
+            <ri status="B-centre">CLARIN</ri>
+         </nodeInfo>
       </centre>
     </header>
+   <info><!--use p, ul, ol elements here--><p>While the list below is not curated, see <a href="https://gams.uni-graz.at/context:gams?mode=about&amp;locale=en#formats">recommendations mentioned by GAMS</a>, which appears to provide the repository service for ZIM.</p></info>
    <formats>
       <format id="fTEISpoken">
          <domain>Audiovisual Annotation</domain>
@@ -111,7 +119,7 @@
          <level>recommended</level>
       </format>
       <format id="fHDF5">
-         <domain>Lexical Resource</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
       <format id="fBiBTeX">
@@ -191,7 +199,7 @@
          <level>recommended</level>
       </format>
       <format id="fGZIP">
-         <domain>Tool Support</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
       <format id="fXSD">
@@ -203,7 +211,7 @@
          <level>recommended</level>
       </format>
       <format id="fZIP">
-         <domain>Tool Support</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
    </formats>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
+    <header>
+        <lastUpdateCommitID>7e71ef73a8caf224caa0836296085830d1ac25ef</lastUpdateCommitID>
+        <filter>
+            <centreID>CLARIN-CH</centreID>
+        </filter>
+        <respStmt>
+            <name>Alexandru Craevschi</name>
+            <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+            <link>mailto:alexandru.craevschi@uzh.ch</link>
+            <reviewDate>2024-10-02</reviewDate>
+        </respStmt>
+        <centre id="CLARIN-CH" deposition="1">
+            <centreName>CLARIN Switzerland</centreName>
+            <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/80" label="LiRI"/>
+            <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/81" label="LaRS"/>
+            <nodeInfo>
+                <ri status="C-centre aiming-for-B">CLARIN</ri>
+            </nodeInfo>
+        </centre>
+    </header>
+    <info><p>For starters, see <a href="https://clarin-ch.ch/start">https://clarin-ch.ch/start</a></p></info>
+    <formats><!--
+            This template will assist in adjusting/creating a recommendations document if you don't
+            have access to a schema-aware XML editor. Copy the XML fragment, 
+            *  adjust the format ID (see https://clarin.ids-mannheim.de/standards/views/list-formats.xq ),
+            *  adjust the domain (https://clarin.ids-mannheim.de/standards/views/list-domains.xq ),
+            *  adjust the recommendation level ({ recommended, acceptable, discouraged }),
+            *  repeat as necessary;
+            *  submit the result as a PR against https://github.com/clarin-eric/standards/tree/formats .
+            
+            <format id="null">
+                <domain>Audiovisual Annotation</domain>
+                <level>recommended</level>
+            </format> 
+        -->
+            <format id="fR">
+            <domain>Statistical Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fSPSS">
+            <domain>Statistical Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fPython">
+            <domain>Statistical Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fSAS">
+            <domain>Statistical Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fPDF">
+            <domain>Text Annotation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fTEI">
+            <domain>Text Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fEAF">
+            <domain>Audiovisual Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fPraat">
+            <domain>Audiovisual Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fXML">
+            <domain>Textual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fMP4">
+            <domain>Audiovisual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fCoNLL-U">
+            <domain>Text Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fXML">
+            <domain>Text Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fDOC">
+            <domain>Documentation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fDOC">
+            <domain>Textual Source Language Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fDOCX">
+            <domain>Audiovisual Annotation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fRTF">
+            <domain>Documentation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fODT">
+            <domain>Documentation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fDOC">
+            <domain>Metadata</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fWave">
+            <domain>Audiovisual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fPDF">
+            <domain>Textual Source Language Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fXML">
+            <domain>Documentation</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fMarkdown">
+            <domain>Textual Source Language Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fJSON">
+            <domain>Text Annotation</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fHTML">
+            <domain>Textual Source Language Data</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fODT">
+            <domain>Textual Source Language Data</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fCoNLL-U">
+            <domain>Textual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fJSON">
+            <domain>Textual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fXML">
+            <domain>Metadata</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fTEIHeader">
+            <domain>Metadata</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fJSON">
+            <domain>Metadata</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fXML">
+            <domain>Audiovisual Annotation</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fMP3">
+            <domain>Audiovisual Source Language Data</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fOGG">
+            <domain>Audiovisual Source Language Data</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fMPEG">
+            <domain>Audiovisual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fHTML">
+            <domain>Documentation</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fXML">
+            <domain>Language Description</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fFLEx">
+            <domain>Lexical Resource</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fSQL">
+            <domain>Lexical Resource</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fCSV">
+            <domain>Lexical Resource</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fXML">
+            <domain>Lexical Resource</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fBiBTeX">
+            <domain>Metadata</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fCSV">
+            <domain>Metadata</domain>
+            <level>acceptable</level>
+        </format>
+        <format id="fTextPlain">
+            <domain>Audiovisual Annotation</domain>
+            <level>discouraged</level>
+        </format>
+        <format id="fDC-XML">
+            <domain>Metadata</domain>
+            <level>recommended</level>
+        </format>
+        <format id="fTextPlain">
+            <domain>Textual Source Language Data</domain>
+            <level>recommended</level>
+        </format>
+    </formats>
+</recommendation>

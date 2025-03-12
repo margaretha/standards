@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../schemas/recommendation.xsd" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?> 
 <recommendation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/recommendation.xsd">
    <header>
       <lastUpdateCommitID>00fb8bd39cea8db57619a65f8f738364ce84dfef</lastUpdateCommitID>
       <filter>
          <centreID>CLARIN.SI</centreID>
       </filter>
+      <respStmt>
+         <name><!--for multiple curators, use multiple respStmt elements, each with a resp--></name>
+         <resp><!--optionally specify the range of responsibility; useful if multiple respStmt are used--></resp>
+         <link><!--URI; GitHub page or any other way to id/contact the curator--></link>
+         <reviewDate>0001-01-01</reviewDate>
+      </respStmt>
    <centre id="CLARIN.SI" deposition="1">
-        <name>CLARIN.SI Language Technology Centre</name>
-        <a href="https://centres.clarin.eu/centre/30"/>
+      <centreName>CLARIN.SI Language Technology Centre, Slovenia</centreName>
+        <registryLink registry="CLARIN" uri="https://centres.clarin.eu/centre/30"/>
         <nodeInfo>
           <ri status="B-centre">CLARIN</ri>
         </nodeInfo>
       </centre>
     </header>
+   <info><!--use p, ul, ol elements here--></info>
    <formats>
       <format id="fEXB">
          <domain>Audiovisual Annotation</domain>
@@ -126,18 +134,6 @@
          <domain>Image Source Language Data</domain>
          <level>recommended</level>
       </format>
-      <format id="fLisp">
-         <domain>Language Description</domain>
-         <level>recommended</level>
-      </format>
-      <format id="fPerl">
-         <domain>Language Description</domain>
-         <level>recommended</level>
-      </format>
-      <format id="fVRT">
-         <domain>Language Description</domain>
-         <level>recommended</level>
-      </format>
       <format id="fCSV">
          <domain>Lexical Resource</domain>
          <level>recommended</level>
@@ -178,7 +174,7 @@
          <domain>Text Annotation</domain>
          <level>recommended</level>
       </format>
-      <format id="fELAN">
+      <format id="fEAF">
          <domain>Textual Source Language Data</domain>
          <level>recommended</level>
       </format>
@@ -215,7 +211,7 @@
          <level>recommended</level>
       </format>
       <format id="fGZIP">
-         <domain>Tool Support</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
       <format id="fJS">
@@ -223,7 +219,7 @@
          <level>recommended</level>
       </format>
       <format id="fTAR">
-         <domain>Tool Support</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
       <format id="fXSD">
@@ -235,7 +231,7 @@
          <level>recommended</level>
       </format>
       <format id="fZIP">
-         <domain>Tool Support</domain>
+         <domain>Packaging</domain>
          <level>recommended</level>
       </format>
    </formats>

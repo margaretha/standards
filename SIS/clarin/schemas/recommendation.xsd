@@ -1,4 +1,6 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1"
+    xmlns:xerces="http://xerces.apache.org" xmlns:saxon="http://saxon.sf.net/">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
     
     <xs:annotation>
@@ -10,14 +12,14 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="header"/>
-                <xs:element ref="info" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="info" minOccurs="1" maxOccurs="unbounded"/>
                 <xs:element ref="formats"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="info">
         <xs:complexType>
-            <xs:group ref="textblock" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:group ref="textblock" minOccurs="0" maxOccurs="unbounded"/>
             <xs:attribute ref="xml:lang" use="optional"/>
         </xs:complexType>
     </xs:element>
@@ -62,12 +64,17 @@
                 <xs:element ref="centreID" minOccurs="0"/>
                 <xs:element ref="domain" minOccurs="0"/>
                 <xs:element ref="level" minOccurs="0"/>
+                <xs:element ref="ri" minOccurs="0"/>
                 <xs:element ref="search" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="search" type="xs:string"/>
-    <xs:element name="centreID" type="xs:string"/>
+    <xs:element name="centreID" type="xs:string">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">'shorthand' for the centre that acts as its ID</xs:documentation>
+        </xs:annotation>
+    </xs:element>
     <xs:element name="domain">
         <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -90,7 +97,7 @@
                             original text included or as stand-off.</xs:documentation>
                     </xs:annotation>
                 </xs:enumeration>
-                <!--Data/Resource Description-->
+
                 <xs:enumeration value="Catalogue Metadata">
                     <xs:annotation>
                         <xs:documentation>Basic structured information for discoverability and
@@ -119,7 +126,7 @@
                             hints.</xs:documentation>
                     </xs:annotation>
                 </xs:enumeration>
-                <!--Databases-->
+
                 <xs:enumeration value="Geodata">
                     <xs:annotation>
                         <xs:documentation>Information on geographic locations.</xs:documentation>
@@ -144,7 +151,7 @@
                             formats.</xs:documentation>
                     </xs:annotation>
                 </xs:enumeration>
-                <!--Source Data-->
+
                 <xs:enumeration value="Audiovisual Source Language Data">
                     <xs:annotation>
                         <xs:documentation>Audio or video recordings providing spoken/multimodal or
@@ -180,12 +187,33 @@
                             potential patterns that may give rise to new domains.</xs:documentation>
                     </xs:annotation>
                 </xs:enumeration>
+                <xs:enumeration value="Packaging">
+                    <xs:annotation>
+                        <xs:documentation>Packaging formats of various nature (archiving,
+                            compression, storage) if no more specific domain is suitable.</xs:documentation>
+                    </xs:annotation>
+                </xs:enumeration>
                 <xs:enumeration value="Tool Support">
                     <xs:annotation>
                         <xs:documentation>Tool-related formats required for specific functionality
                             of the tool or reliable reuse of resources (e.g. tagsets, annotation
                             schemes, vocabularies, language models, parameter files, and other
                             specifications or settings)</xs:documentation>
+                    </xs:annotation>
+                </xs:enumeration>
+                <xs:enumeration value="ML Data Preparation">
+                    <xs:annotation>
+                        <xs:documentation>Data curated and formatted for integration into machine learning systems.</xs:documentation>
+                    </xs:annotation>
+                </xs:enumeration>
+                <xs:enumeration value="ML Model Training">
+                    <xs:annotation>
+                        <xs:documentation>Data used for pre-training and fine-tuning of machine learning models.</xs:documentation>
+                    </xs:annotation>
+                </xs:enumeration>
+                <xs:enumeration value="ML Model Exchange">
+                    <xs:annotation>
+                        <xs:documentation>Data that enable the sharing and deployment of machine learning models across different systems and platforms.</xs:documentation>
                     </xs:annotation>
                 </xs:enumeration>
             </xs:restriction>
@@ -202,9 +230,10 @@
     </xs:element>
     <xs:element name="respStmt">
         <xs:annotation>
-            <xs:documentation>This is an element filled with the name of the curator and date of 
-                curation, and used as an official 'stamp' stating that the set of recommendations 
-                is now ready for public consumption. It should be set at inputhons or manually, when receiving subsequent PRs from the given centre.</xs:documentation>
+            <xs:documentation>This is an element filled with the name of the curator and date of
+                curation, and used as an official 'stamp' stating that the set of recommendations is
+                now ready for public consumption. It should be set at inputhons or manually, when
+                receiving subsequent PRs from the given centre.</xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
@@ -218,7 +247,8 @@
     <xs:element name="name" type="xs:string"/>
     <xs:element name="resp" type="xs:string">
         <xs:annotation>
-            <xs:documentation>Optionally specifies the scope of responsibility, if e.g. a centre manages data across different departments.</xs:documentation>
+            <xs:documentation>Optionally specifies the scope of responsibility, if e.g. a centre
+                manages data across different departments.</xs:documentation>
         </xs:annotation>
     </xs:element>
     <xs:element name="link" type="xs:string">
@@ -234,27 +264,98 @@
         </xs:annotation>
     </xs:element>
     <xs:element name="centre">
-        <xs:complexType mixed="true">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">information about the centre</xs:documentation>
+            <xs:appinfo>
+                <sch:pattern xmlns:sch="http://purl.oclc.org/dsdl/schematron">
+                    <sch:rule context="header/centre">
+                        <sch:assert
+                            test="count(../filter/centreID) = 0 or @id = ../filter/centreID/text()"
+                            >The attribute @id of header/centre has to match header/filter/centreID if
+                            the latter is present.</sch:assert>
+                    </sch:rule>
+                </sch:pattern>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:complexType mixed="false">
             <xs:sequence>
-                <xs:element name="name" type="xs:string"/>
-                <xs:element ref="a"/>
+                <xs:element ref="centreName" minOccurs="1" maxOccurs="unbounded"/>
+                <xs:element ref="registryLink" minOccurs="1" maxOccurs="unbounded"/>
                 <xs:element ref="nodeInfo"/>
             </xs:sequence>
-            <xs:attribute name="id" type="xs:ID" use="required"/>
+            <xs:attribute name="id" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">'shorthand' for the centre that acts as its ID</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="deposition" type="xs:boolean" use="optional" default="false"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="centreName">
+        <xs:annotation>
+            <xs:documentation>the full name of the centre</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="ri" use="optional" type="ResearchInfrastructures">
+                        <xs:annotation>
+                            <xs:documentation>Name of the research infrastructure, if the preferred
+                                centre name depends on the research infrastructure.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="registryLink">
+        <xs:annotation>
+            <xs:documentation>Link to a registry / database, e.g. the CLARIN centre registry; it is
+                assumed that a centre always comes from some catalogue of centres in the given RI. A
+                centre may be part of different registries. If multiple registryLink elements are
+                present sharing an identical attribute @registry, then, for statistical purposes, it
+                is assumed that the described entity is an abstraction (e.g. a consortium) that
+                consists of more than one centre.</xs:documentation></xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="registry" use="required" type="ResearchInfrastructures">
+                        <xs:annotation>
+                            <xs:documentation>Name of the registry being linked to. Default: the
+                                CLARIN centre registry.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="uri" use="required" type="xs:anyURI"/>
+                    <xs:attribute name="label" use="optional" type="xs:string">
+                        <xs:annotation><xs:documentation>Optional label</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
     <xs:element name="nodeInfo" type="nodeInfoType"/>
     <xs:complexType name="nodeInfoType">
+        
         <xs:sequence>
             <xs:element ref="ri" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:element name="ri">
+        <xs:annotation>
+            <xs:documentation>Identify the research infrastructure to which the centre belongs. This
+                element occurs in a centre description and in the exports of recommendation
+                lists.</xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="ResearchInfrastructures">
-                    <xs:attribute name="status" use="required" type="xs:token"/>
+                    <xs:attribute name="status" use="optional" type="xs:token">
+                        <xs:annotation>
+                            <xs:documentation>Status of the centre (node) in the given research
+                                infrastructure. (In CLARIN, it's e.g. "B-centre", in Text+, e.g.
+                                "Collections".)</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
@@ -275,18 +376,34 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="format">
+        <xs:annotation>
+            <xs:documentation>The centreID element is only valid for exports from the
+                "recommended formats" list, provided for all centres. It should NOT be
+                used for importing centre recommendations into SIS.</xs:documentation>
+            <!--<xs:appinfo>
+                <sch:pattern xmlns:sch="http://purl.oclc.org/dsdl/schematron">
+                    <sch:rule context="formats/format">
+                        <sch:assert
+                            test="string-length(@id) eq string-length(normalize-space(@id))"
+                            >Remove spurious whitespace from the @id string.</sch:assert>
+                    </sch:rule>
+                </sch:pattern>
+                <!-\-  this schematron check needs an extra PI in each recommendation doc and I'd rather avoid adding that -\->
+            </xs:appinfo>-->
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="centreID" minOccurs="0" maxOccurs="1">
-                    <xs:annotation>
-                        <xs:documentation>This element is only valid for exports from the "recommended formats" list, provided for all centres. 
-                            It should NOT be used for importing centre recommendations into SIS.</xs:documentation></xs:annotation>
-                </xs:element>
+                <xs:element ref="centreID" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="domain"/>
                 <xs:element ref="level"/>
                 <xs:element minOccurs="0" ref="comment" maxOccurs="unbounded"/>
             </xs:sequence>
-            <xs:attribute name="id" use="required" type="xs:NCName"/>
+            <xs:attribute name="id" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Existing or postulated ID of a format description.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:assert xerces:message="Remove spurious whitespace from the @id string." saxon:message="Remove spurious whitespace from the @id string." test="count(tokenize(@id, '\s+')) eq 1"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="comment" type="commentType"/>
@@ -318,6 +435,20 @@
     <xs:group name="textblock">
         <xs:choice>
             <xs:element name="p" type="commentType"/>
+            <xs:element name="h3" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>This is the highest-level heading that curators can use (it
+                        fits in with the other headings used on the centre info
+                        pages).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="h4" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>This is the lowest-level heading that curators can use (it
+                        fits in with the other headings used on the centre info
+                        pages).</xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="ul">
                 <xs:complexType>
                     <xs:sequence>

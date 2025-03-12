@@ -9,8 +9,9 @@
   <keyword>format family</keyword>
   
   <info type="description">
-    <p>In the context of format recommendations, the TEI has the same status as XML: too general to
-      be a meaningful recommendation. The 
+    <p>In the context of format recommendations, the unqualified TEI has the same status as <a href="../views/view-format.xq?id=fXML">XML</a>: too general to be a 
+      meaningful recommendation. Please refrain from using just "TEI" in format recommendations.</p>
+    <p>The 
       <a href="https://tei-c.org/release/doc/tei-p5-doc/en/html/index.html">TEI Guidelines</a>, together with the surrounding
       <a href="https://tei-c.org/tools/">infrastructure</a> (Stylesheets and dedicated utilities) is a toolkit for creating formats (also formats that serialize a standard).</p>
     <p>By rule of thumb, centres should expect that each TEI document submitted to them is either
@@ -23,11 +24,12 @@
       TEI Stylesheets or Roma, XML editor add-ons, etc.</p>
     <p>In the context of CLARIN and LRT applications, the following TEI-based formats are recognizable:</p>
     <ul>
-      <li><a href="../views/view-format.xq?id=fTEISpoken">ISO/TEI Transcriptions of Spoken Language</a> -- serializing the <a href="../views/view-spec.xq?id=SpecTranScript">corresponding ISO standard</a></li>
       <li><a href="../views/view-format.xq?id=fDTABf">DTABf</a> -- Deutsches Textarchiv Basisformat, used at BBAW</li>
-      <li>ISO LMF -- TEI serialization of the Lexical Markup Framework (part 4 of the 2020 <a href="../views/view-spec.xq?id=SpecLMF">LMF</a> standard)</li>
-      <li>TEI Lex0 -- an OASIS standard for the encoding of (a.o.) retrodigitised dictionaries, maintained by DARIAH</li>
-      <li><a href="../views/view-format.xq?id=fDTABf">I5</a> -- tool format of DeReKo (Deutsches Referenzkorpus), used at IDS Mannheim</li>
+      <li><a href="../views/view-format.xq?id=fI5">I5</a> -- tool format of DeReKo (Deutsches Referenzkorpus), used at IDS Mannheim</li>
+      <li><a href="../views/view-format.xq?id=fTEISpoken">ISO/TEI Transcriptions of Spoken Language</a> -- serializing the <a href="../views/view-spec.xq?id=SpecTranScript">corresponding ISO standard</a></li>
+      <li><a href="../views/view-format.xq?id=fLMF">ISO LMF</a> -- TEI serialization of the Lexical Markup Framework (part 4 of the 2020 <a href="../views/view-spec.xq?id=SpecLMF">LMF</a> standard)</li>
+      <li><a href="../views/view-format.xq?id=fMenota">Menota</a> -- the Medieval Nordic Text Archive TEI extensions</li>
+      <li><a href="../views/view-format.xq?id=fLex0">TEI Lex0</a> -- an OASIS standard for the encoding of (a.o.) retrodigitised dictionaries, maintained by DARIAH</li>
     </ul>
     <p>The above list is not meant to be exhaustive. While the above items would generally qualify
       as TEI extensions, the
@@ -35,7 +37,7 @@
       defines a series of restrictions on the overall TEI schema, referred to as 'templates' and
       meant as bases for further customization, as well as three fully-defined and maintained
       customizations: TEI Lite, TEI simplePrint, TEI Tite.</p>
-    <p>For the purpose of metadata descriptions, free-standing <a href="../views/view-format.xq?id=fTEIHeader">TEI headers</a> can often be found of use.</p>
+    <p>For the purpose of metadata descriptions, free-standing <a href="../views/view-format.xq?id=fTEIHeader">TEI headers</a> can often be useful.</p>
   </info>
   <relation target="SpecTei" type="isDefinedBy"/>
   <mimeType>application/tei+xml</mimeType>

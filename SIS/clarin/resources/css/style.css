@@ -69,7 +69,8 @@ li{
     text-align:center;
     background-color:whitesmoke;
     color:grey;    
-    margin-left:2px;    
+    margin-left:2px;
+    cursor:pointer;
 }
 
 div.ri-tab-line {
@@ -154,6 +155,12 @@ hr{
 .heading3 {
 	font-size:14px;
 	font-weight:bold;
+}
+
+.heading4 {
+	font-size:13px;
+	font-weight:bold;
+    font-style:italic;
 }
 
 .desctext{
@@ -241,6 +248,13 @@ h3{
     font-size:14px;
     font-weight:bold;
 }
+
+h4{
+    font-size:13px;
+    font-weight:bold;
+    font-style:italic;
+}
+
 
 div,table {
 margin: 10pt;
